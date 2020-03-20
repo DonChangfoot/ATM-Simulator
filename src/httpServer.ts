@@ -3,6 +3,7 @@ import swagger from './interface/swagger.json'
 import { tcpClient } from 'tcpClient'
 import * as WithdrawalController from './controllers/withdrawal-controller'
 import * as AuthorizationController from './controllers/authorization-controller'
+import * as ReversalController from './controllers/reversal-controller'
 const CentralLogger = require('@mojaloop/central-services-logger')
 
 export type ServerConfig = {
@@ -36,6 +37,12 @@ export async function startHttpServer (services: services, config?: ServerConfig
   if (!services.logger) {
     server.app.logger = CentralLogger
   }
+
+  server.route({
+    method: 'POST',
+    path: '/authRequestReversal',
+    handler: ReversalController.create
+  })
 
   await server.register({
     plugin: require('hapi-openapi'),

@@ -45,6 +45,8 @@ export function createIso0100Message (MSISDN: string, amount: string) {
     25: '00',
     28: 'D00000200',
     30: 'C00000000',
+    32: '00000000000',
+    33: '00000000000',
     37: '000000000010',
     40: '000',
     41: '00000003',
@@ -55,6 +57,7 @@ export function createIso0100Message (MSISDN: string, amount: string) {
     59: '0000000010',
     100: '484848',
     102: MSISDN, // Mobile number/Account Number
+    123: '211201213144001', // Last two digits is custom code to say it is from ATM. 01 will be used for POS.
     127.2: '000319562' // Postillion switchKey
   }
 
@@ -99,6 +102,49 @@ export function createIso0200Message (otp: string) {
   }
 
   const isopack = new IsoParser(ISO0200)
+  const bufferMessage = isopack.getBufferMessage()
+
+  return bufferMessage
+}
+
+export function createIso0420Message (originalMti: string) {
+  if (originalMti.length !== 4) {
+    throw new Error('mti needs to be length 4.')
+  }
+  const field7 = generateField7()
+  const ISO0420 = {
+    0: '0420',
+    2: '44482789624500003',
+    3: '390000',
+    4: '000000010000',
+    7: field7,
+    11: '000002',
+    12: '103636',
+    13: '0130',
+    14: '2010',
+    15: '0328',
+    18: '0780',
+    22: '000',
+    25: '00',
+    28: 'C00000100',
+    30: 'C00000000',
+    37: '000000000010',
+    39: '68',
+    40: '010',
+    41: '00000003',
+    42: '000000000000001',
+    49: '840',
+    56: '4021',
+    59: '0000014491',
+    90: `${originalMti}000002${field7}0000000000000000000000`,
+    95: '000000000000000000000000C00000000C00000000',
+    100: '484848',
+    102: '444827896245',
+    123: '000011000010001',
+    127.2: '0000014491'
+  }
+
+  const isopack = new IsoParser(ISO0420)
   const bufferMessage = isopack.getBufferMessage()
 
   return bufferMessage

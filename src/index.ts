@@ -40,6 +40,7 @@ const start = async (): Promise<void> => {
 
         // Graceful shutdown
         await server.stop()
+        tcpClient.client.destroy()
         console.log('completed graceful shutdown.')
       } catch (err) {
         const errInfo =
